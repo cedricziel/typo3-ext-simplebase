@@ -2,6 +2,23 @@ services:
     default_connection:
         class: TYPO3\CMS\Core\Database\Connection
         factory: [ 'CedricZiel\Simplebase\Framework\Database\ConnectionFactory', 'getConnection' ]
+    controller_resolver:
+        class: Symfony\Component\HttpKernel\Controller\ControllerResolver
     entity_manager:
         class: Doctrine\ORM\EntityManager
         factory: ['CedricZiel\Simplebase\Framework\Database\EntityManagerFactory', 'getDefaultEntityManager']
+    event_dispatcher:
+        class: Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher
+        arguments: ["@service_container"]
+    http_kernel:
+        class: Symfony\Component\HttpKernel\HttpKernel
+        arguments: ["@event_dispatcher", "@controller_resolver", "@request_stack"]
+    kernel:
+        synthetic: true
+    request_stack:
+        class: Symfony\Component\HttpFoundation\RequestStack
+    service_container:
+        synthetic: true
+        autowiring_types:
+            - Symfony\Component\DependencyInjection\ContainerInterface
+            - Symfony\Component\DependencyInjection\Container

@@ -1,11 +1,11 @@
 {
-    "name": "cedricziel/doctrine-orm",
+    "name": "cedricziel/simplebase",
     "type": "typo3-cms-extension",
     "description" : "Doctrine ORM for TYPO3",
     "license": "GPL-2.0+",
     "autoload": {
         "psr-4": {
-            "TYPO3\\Doctrine\\ORM\\": "Classes"
+            "CedricZiel\\Simplebase\\": "Classes"
         }
     },
     "require": {

@@ -2,11 +2,14 @@
 
 namespace CedricZiel\Simplebase\Framework;
 
-use CedricZiel\Simplebase\SimplebaseSimplebaseExtension;
+use CedricZiel\Simplebase\DependencyInjection\SimplebaseExtension;
+use CedricZiel\Simplebase\Framework\Container\ContainerBuilder;
+use CedricZiel\Simplebase\Framework\Kernel\ExtensionKernel;
 use CedricZiel\SimplebaseNews\Entity\News;
 use Symfony\Component\DependencyInjection\ContainerBuilder as SymfonyContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
-use TYPO3\Doctrine\ORM\Framework\Container\ContainerBuilder;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @package CedricZiel\Simplebase\Framework
@@ -15,7 +18,8 @@ class Bootstrap
 {
     /**
      * @param string $content
-     * @param array $configuration
+     * @param array  $configuration
+     *
      * @return string
      */
     public function run($content, $configuration)
@@ -24,6 +28,12 @@ class Bootstrap
         $entityManager = $container->get('entity_manager');
         $repository = $entityManager->getRepository(News::class);
         $cat = $repository->findAll();
+
+        $kernel = $this->initializeKernel();
+
+        $request = Request::createFromGlobals();
+        $response = $kernel->handle($request);
+        $response->send();
 
         var_dump($cat);
 
@@ -55,6 +65,20 @@ class Bootstrap
     }
 
     /**
+     * Creates a kernel for the current plugin
+     *
+     * @return KernelInterface
+     */
+    protected function initializeKernel()
+    {
+
+        $kernel = new ExtensionKernel('dev', true);
+        $kernel->boot();
+
+        return $kernel;
+    }
+
+    /**
      * Retrieve DI extensions from global configuration
      *
      * @param array $configuration
@@ -65,7 +89,7 @@ class Bootstrap
     {
         // Register standard services
         $extensions = [
-            SimplebaseSimplebaseExtension::class,
+            SimplebaseExtension::class,
         ];
 
         $extensionName = $configuration['extensionName'];

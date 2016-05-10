@@ -1,0 +1,7 @@
+services:
+    default_connection:
+        class: TYPO3\CMS\Core\Database\Connection
+        factory: [ 'CedricZiel\Simplebase\Framework\Database\ConnectionFactory', 'getConnection' ]
+    entity_manager:
+        class: Doctrine\ORM\EntityManager
+        factory: ['CedricZiel\Simplebase\Framework\Database\EntityManagerFactory', 'getDefaultEntityManager']

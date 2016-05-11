@@ -22,7 +22,15 @@ class ExtensionKernel extends Kernel
     /**
      * @var array
      */
-    protected $normalBundles = [];
+    protected $pluginBundles = [];
+
+    /**
+     * @var array
+     */
+    protected $standardBundles = [
+        SimplebaseBundle::class,
+        TwigBundle::class,
+    ];
 
     /**
      * @var array
@@ -36,13 +44,23 @@ class ExtensionKernel extends Kernel
      */
     public function registerBundles()
     {
-        $bundles = [
-            new TwigBundle(),
-            new SimplebaseBundle(),
-        ];
+        $bundles = [];
 
+        // Add framework bundles
+        foreach ($this->standardBundles as $standardBundleClassRef) {
+            $bundles[] = new $standardBundleClassRef;
+        }
+
+        // Add plugin specific bundles
+        foreach ($this->pluginBundles as $pluginBundleClassRef) {
+            $bundles[] = new $pluginBundleClassRef;
+        }
+
+        // Add debug bundles
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
-            // ..
+            foreach ($this->debugBundles as $debugBundleClassRef) {
+                $bundles[] = new $debugBundleClassRef;
+            }
         }
 
         return $bundles;
@@ -110,5 +128,15 @@ class ExtensionKernel extends Kernel
         foreach ($this->pluginConfiguration as $param => $value) {
             $container->setParameter($param, $value);
         }
+    }
+
+    /**
+     * Adds custom bundles to the kernel
+     *
+     * @param array $pluginBundles
+     */
+    public function addPluginSpecificBundles($pluginBundles = [])
+    {
+        $this->pluginBundles = $pluginBundles;
     }
 }

@@ -76,9 +76,9 @@ class ExtensionUtility
         }
 
         if (true === is_array($bundles)) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['extensions'] = $bundles;
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['bundles'] = $bundles;
         } else {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['extensions'] = [];
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['bundles'] = [];
         }
 
         switch ($pluginType) {

@@ -2,12 +2,7 @@
 
 namespace CedricZiel\Simplebase\Framework;
 
-use CedricZiel\Simplebase\DependencyInjection\SimplebaseExtension;
-use CedricZiel\Simplebase\Framework\Container\ContainerBuilder;
 use CedricZiel\Simplebase\Framework\Kernel\ExtensionKernel;
-use Psr\Http\Message\RequestInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder as SymfonyContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -18,7 +13,7 @@ class Bootstrap
 {
     /**
      * @param string $content
-     * @param array  $configuration
+     * @param array $configuration
      *
      * @return string
      */
@@ -31,6 +26,7 @@ class Bootstrap
         /** @var ExtensionKernel $kernel */
         $kernel = $this->initializeKernel($vendorName.$extensionName.$pluginName);
         $kernel->setPluginConfiguration($configuration);
+        $kernel->addPluginSpecificBundles($this->getPluginSpecificBundles($extensionName, $pluginName));
 
         // Boot the kernel so the container is built
         $kernel->boot();
@@ -61,5 +57,21 @@ class Bootstrap
         }
 
         return $extensionKernel;
+    }
+
+    /**
+     * @param string $extensionName
+     * @param string $pluginName
+     * @return array
+     */
+    protected function getPluginSpecificBundles($extensionName, $pluginName)
+    {
+        $extensionConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'];
+
+        if (false === is_array($extensionConf[$extensionName]['plugins'][$pluginName]['pluginBundles'])) {
+            return [];
+        }
+
+        return $extensionConf[$extensionName]['plugins'][$pluginName]['pluginBundles'];
     }
 }

@@ -3,7 +3,11 @@ services:
         class: TYPO3\CMS\Core\Database\Connection
         factory: [ 'CedricZiel\Simplebase\Framework\Database\ConnectionFactory', 'getConnection' ]
     controller_resolver:
-        class: Symfony\Component\HttpKernel\Controller\ControllerResolver
+        class: CedricZiel\Simplebase\Framework\Controller\ControllerResolver
+        arguments: ['@service_container', '@controller_name_parser']
+    controller_name_parser:
+        class: CedricZiel\Simplebase\Framework\Controller\ControllerNameParser
+        arguments: ['@kernel']
     entity_manager:
         class: Doctrine\ORM\EntityManager
         factory: ['CedricZiel\Simplebase\Framework\Database\EntityManagerFactory', 'getDefaultEntityManager']
@@ -22,3 +26,7 @@ services:
         autowiring_types:
             - Symfony\Component\DependencyInjection\ContainerInterface
             - Symfony\Component\DependencyInjection\Container
+    router_listener:
+        class: CedricZiel\Simplebase\Framework\Routing\RouterListener
+        tags:
+            - { name: kernel.event_subscriber }

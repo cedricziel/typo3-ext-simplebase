@@ -5,7 +5,6 @@ namespace CedricZiel\Simplebase\Framework;
 use CedricZiel\Simplebase\DependencyInjection\SimplebaseExtension;
 use CedricZiel\Simplebase\Framework\Container\ContainerBuilder;
 use CedricZiel\Simplebase\Framework\Kernel\ExtensionKernel;
-use CedricZiel\SimplebaseNews\Entity\News;
 use Symfony\Component\DependencyInjection\ContainerBuilder as SymfonyContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,44 +23,17 @@ class Bootstrap
      */
     public function run($content, $configuration)
     {
-        $container = $this->initializeContainer($configuration);
-        $entityManager = $container->get('entity_manager');
-        $repository = $entityManager->getRepository(News::class);
-        $cat = $repository->findAll();
-
         $kernel = $this->initializeKernel();
 
         $request = Request::createFromGlobals();
         $response = $kernel->handle($request);
-        $response->send();
 
-        var_dump($cat);
+        $content = $response->getContent();
+        $kernel->shutdown();
 
+        // TODO: consider shared kernels that are terminated through
+        // register_shutdown or an outer signal
         return $content;
-    }
-
-    /**
-     * Initializes the container
-     *
-     * @param array $configuration
-     *
-     * @return SymfonyContainerBuilder
-     */
-    public function initializeContainer($configuration = [])
-    {
-        $container = ContainerBuilder::build();
-        $extensionReferences = $this->getPluginExtensions($configuration);
-
-        foreach ($extensionReferences as $idx => $classReference) {
-            /** @var ExtensionInterface $extension */
-            $extension = new $classReference;
-            $container->registerExtension($extension);
-            $container->loadFromExtension($extension->getAlias());
-        }
-
-        $container->compile();
-
-        return $container;
     }
 
     /**
@@ -71,38 +43,6 @@ class Bootstrap
      */
     protected function initializeKernel()
     {
-
-        $kernel = new ExtensionKernel('dev', true);
-        $kernel->boot();
-
-        return $kernel;
-    }
-
-    /**
-     * Retrieve DI extensions from global configuration
-     *
-     * @param array $configuration
-     *
-     * @return array
-     */
-    private function getPluginExtensions($configuration = [])
-    {
-        // Register standard services
-        $extensions = [
-            SimplebaseExtension::class,
-        ];
-
-        $extensionName = $configuration['extensionName'];
-        $globalExtensionConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'];
-        $pluginName = $configuration['pluginName'];
-
-        if (is_array($globalExtensionConf[$extensionName]['plugins'][$pluginName]['extensions'])) {
-            $extensions = array_merge(
-                $extensions,
-                $globalExtensionConf[$extensionName]['plugins'][$pluginName]['extensions']
-            );
-        }
-
-        return $extensions;
+        return new ExtensionKernel('dev', true);
     }
 }

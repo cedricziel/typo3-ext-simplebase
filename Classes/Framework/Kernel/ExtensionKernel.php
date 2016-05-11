@@ -35,6 +35,22 @@ class ExtensionKernel extends Kernel
     }
 
     /**
+     * @return string
+     */
+    public function getCacheDir()
+    {
+        return PATH_site.'/typo3temp/var/Cache/Simplebase';
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogDir()
+    {
+        return PATH_site.'/typo3temp/var/logs';
+    }
+
+    /**
      * Loads the container configuration.
      *
      * @param LoaderInterface $loader A LoaderInterface instance
@@ -44,19 +60,8 @@ class ExtensionKernel extends Kernel
         // TODO: Implement registerContainerConfiguration() method.
     }
 
-    /**
-     * @return string
-     */
-    public function getCacheDir()
+    public function getRootDir()
     {
-        return PATH_site . '/typo3temp/var/Cache/Simplebase';
-    }
-
-    /**
-     * @return string
-     */
-    public function getLogDir()
-    {
-        return PATH_site . '/typo3temp/var/logs';
+        return __DIR__;
     }
 }

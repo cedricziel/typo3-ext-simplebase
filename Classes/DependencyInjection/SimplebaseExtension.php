@@ -6,7 +6,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\Routing\Loader\YamlFileLoader as YamlRouteLoader;
 
 /**
  * @package CedricZiel\Simplebase
@@ -30,11 +29,5 @@ class SimplebaseExtension extends Extension
             $packageFileLocator
         );
         $loader->load('services.yml');
-
-        $routeLoader = new YamlRouteLoader(
-            $packageFileLocator
-        );
-
-        $routeLoader->load('routing.yml');
     }
 }

@@ -9,8 +9,11 @@
         }
     },
     "require": {
+        "doctrine/orm": "^2.5",
         "symfony/config": "^3.0",
         "symfony/dependency-injection": "^3.0",
-        "symfony/yaml": "^3.0"
+        "symfony/yaml": "^3.0",
+        "symfony/http-kernel": "^3.0",
+        "symfony/routing": "^3.0"
     }
 }

@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @package Framework\Controller
+ * @package CedricZiel\Simplebase\Framework\Controller
  */
 abstract class AbstractController implements ContainerAwareInterface
 {
@@ -22,5 +22,19 @@ abstract class AbstractController implements ContainerAwareInterface
     protected function get($service, $onInvalid = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE)
     {
         return $this->container->get($service, $onInvalid);
+    }
+
+    /**
+     * @param string $templateName
+     * @param array  $args
+     *
+     * @return string
+     */
+    protected function render($templateName, $args = [])
+    {
+        /** @var \Twig_Environment $twig */
+        $twig = $this->get('twig');
+
+        return $twig->render($templateName, $args);
     }
 }

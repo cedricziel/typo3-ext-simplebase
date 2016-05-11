@@ -14,6 +14,8 @@ class DefaultController extends AbstractController
 {
     /**
      * Simple index action that interacts with the container
+     *
+     * @return Response
      */
     public function indexAction()
     {
@@ -23,6 +25,13 @@ class DefaultController extends AbstractController
 
         $news = $newsRepository->findAll();
 
-        return new Response(var_dump($news, true));
+        return new Response(
+            $this->render(
+                '@Simplebase/layout.html.twig',
+                [
+                    'news' => $news,
+                ]
+            )
+        );
     }
 }

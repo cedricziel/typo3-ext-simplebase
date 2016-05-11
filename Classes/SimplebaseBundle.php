@@ -2,6 +2,7 @@
 
 namespace CedricZiel\Simplebase;
 
+use CedricZiel\Simplebase\DependencyInjection\Compiler\AddConventionalTemplatePathsPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
@@ -18,6 +19,7 @@ class SimplebaseBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new AddConventionalTemplatePathsPass());
         $container->addCompilerPass(new RegisterListenersPass(), PassConfig::TYPE_BEFORE_REMOVING);
     }
 }

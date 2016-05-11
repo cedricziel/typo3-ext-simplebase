@@ -3,6 +3,7 @@
 namespace CedricZiel\Simplebase\Framework\Kernel;
 
 use CedricZiel\Simplebase\SimplebaseBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
@@ -31,6 +32,7 @@ class ExtensionKernel extends Kernel
     {
         return [
             new SimplebaseBundle(),
+            new TwigBundle(),
         ];
     }
 
@@ -57,7 +59,7 @@ class ExtensionKernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        // TODO: Implement registerContainerConfiguration() method.
+        $loader->load(__DIR__.'/../../../Configuration/Framework/config_'.$this->getEnvironment().'.yml');
     }
 
     public function getRootDir()

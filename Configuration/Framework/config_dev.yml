@@ -1,3 +1,2 @@
-twig:
-    paths:
-        "%kernel.root_dir%/../../../Resources/Private/views": simplebase
+imports:
+    - { resource: config.yml }

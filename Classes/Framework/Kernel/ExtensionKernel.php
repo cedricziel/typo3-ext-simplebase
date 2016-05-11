@@ -5,6 +5,7 @@ namespace CedricZiel\Simplebase\Framework\Kernel;
 use CedricZiel\Simplebase\SimplebaseBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -24,16 +25,27 @@ class ExtensionKernel extends Kernel
     protected $normalBundles = [];
 
     /**
+     * @var array
+     */
+    protected $pluginConfiguration = [];
+
+    /**
      * Returns an array of bundles to register.
      *
      * @return BundleInterface[] An array of bundle instances.
      */
     public function registerBundles()
     {
-        return [
-            new SimplebaseBundle(),
+        $bundles = [
             new TwigBundle(),
+            new SimplebaseBundle(),
         ];
+
+        if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
+            // ..
+        }
+
+        return $bundles;
     }
 
     /**
@@ -65,5 +77,38 @@ class ExtensionKernel extends Kernel
     public function getRootDir()
     {
         return __DIR__;
+    }
+
+    /**
+     * Identify this kernel uniquely
+     *
+     * @param $string
+     */
+    public function setName($string = 'simplebase')
+    {
+        $this->name = $string;
+        $this->name = $this->getName();
+    }
+
+    /**
+     * @param array $conf
+     */
+    public function setPluginConfiguration($conf = [])
+    {
+        $this->pluginConfiguration = $conf;
+    }
+
+    /**
+     * Adds runtime configuration to the container being built.
+     *
+     * @param ContainerBuilder $container
+     */
+    public function prepareContainer(ContainerBuilder $container)
+    {
+        parent::prepareContainer($container);
+
+        foreach ($this->pluginConfiguration as $param => $value) {
+            $container->setParameter($param, $value);
+        }
     }
 }

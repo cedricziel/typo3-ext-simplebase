@@ -2,7 +2,7 @@
 
 namespace CedricZiel\Simplebase\Framework\Routing;
 
-use CedricZiel\Simplebase\Controller\DefaultController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -14,6 +14,18 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class RouterListener implements EventSubscriberInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
     /**
      * {@inheritdoc}
      */
@@ -47,6 +59,17 @@ class RouterListener implements EventSubscriberInterface
          *
          * ToDo: Resolve routes from the given TypoScript configuration for the USER object
          */
+        $extensionName = $this->container->getParameter('extensionName');
+        $pluginName = $this->container->getParameter('pluginName');
+
+        $baseBundleName = $extensionName.'Bundle';
+
+
+
+        /**
+         * @TODO: Integrate routing configuration deeper into container
+         */
+        // $request->attributes->set('_controller', 'Simplebase:Default:index');
         $request->attributes->set('_controller', 'SimplebaseBundle:Default:index');
     }
 }

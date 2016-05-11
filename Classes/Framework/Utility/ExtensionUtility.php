@@ -19,7 +19,7 @@ class ExtensionUtility
 
     /**
      * Add auto-generated TypoScript to configure the Extbase Dispatcher.
-     *
+
      * When adding a frontend plugin you will have to add both an entry to the TCA definition
      * of tt_content table AND to the TypoScript template which must initiate the rendering.
      * Including the plugin code after "defaultContentRendering" adds the necessary TypoScript
@@ -27,13 +27,14 @@ class ExtensionUtility
      * This means, it will also work for the extension "css_styled_content"
      * FOR USE IN ext_localconf.php FILES
      * Usage: 2
+
      *
-     * @param string $extensionName The extension name (in UpperCamelCase) or the extension key (in lower_underscore)
+*@param string $extensionName The extension name (in UpperCamelCase) or the extension key (in lower_underscore)
      * @param string $pluginName must be a unique id for your plugin in UpperCamelCase (the string length of the extension key added to the length of the plugin name should be less than 32!)
-     * @param array $controllerActions is an array of allowed combinations of controller and action stored in an array (controller name as key and a comma separated list of action names as value, the first controller and its first action is chosen as default)
-     * @param array $nonCacheableControllerActions is an optional array of controller name and  action names which should not be cached (array as defined in $controllerActions)
-     * @param string $pluginType either \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_PLUGIN (default) or \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
-     * @param array $extensions Dependency Injection extensions
+     * @param array  $controllerActions             is an array of allowed combinations of controller and action stored in an array (controller name as key and a comma separated list of action names as value, the first controller and its first action is chosen as default)
+     * @param array  $nonCacheableControllerActions is an optional array of controller name and  action names which should not be cached (array as defined in $controllerActions)
+     * @param string $pluginType                    either \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_PLUGIN (default) or \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+     * @param array  $bundles                       HttpKernel Bundles
      */
     public static function configurePlugin(
         $extensionName,
@@ -41,7 +42,8 @@ class ExtensionUtility
         array $controllerActions,
         array $nonCacheableControllerActions = array(),
         $pluginType = self::PLUGIN_TYPE_PLUGIN,
-        $extensions = []
+        $bundles = [],
+        $bundleClass = ''
     ) {
         self::checkPluginNameFormat($pluginName);
         self::checkExtensionNameFormat($extensionName);
@@ -73,11 +75,10 @@ class ExtensionUtility
             }
         }
 
-        var_dump($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']);
-        if (true === is_array($extensions)) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['extensions'] = $extensions;
+        if (true === is_array($bundles)) {
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['extensions'] = $bundles;
         } else {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['extensions'] = [SimplebaseSimplebaseExtension::class];
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['extensions'] = [];
         }
 
         switch ($pluginType) {

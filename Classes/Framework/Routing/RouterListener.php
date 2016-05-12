@@ -49,35 +49,34 @@ class RouterListener implements EventSubscriberInterface
 
         /**
          * Examples for controller bindings:
-         *
          * Using a full reference that will be __invoke'd
          * $request->attributes->set('_controller', DefaultController::class.'::indexAction');
-         *
          * Using a closure:
          * $request->attributes->set('_controller', function(Request $request) {
          *   // return a ResponseInterface here
          * });
-         *
          * Using the symfony fullstack bundle / controller / method -reference style:
          * $request->attributes->set('_controller', 'Simplebase:Default:index');
-         *
          * ToDo: Resolve routes from the given TypoScript configuration for the USER object
          */
 
         $extensionName = $this->container->getParameter('extensionName');
         $pluginName = $this->container->getParameter('pluginName');
-
         $baseBundleName = $extensionName.'Bundle';
 
         $routes = $this->container->getParameter('routes');
         $prefix = $this->container->getParameter('prefix');
+        $arguments = $request->get($prefix, []);
 
-        var_dump($request->get($prefix, false));
-        if (false !== $request->get($prefix, false) && '' !== $request->get($prefix,
-                ['controller' => ''])['controller']
-        ) {
-            $request->attributes->set('_controller', $request->get($prefix)['controller']);
-            $request->attributes->set('news', $request->get($prefix)['news']);
+        /**
+         * Map arguments onto request
+         */
+        foreach ($arguments as $attribute => $value) {
+            $request->attributes->set($attribute, $value);
+        }
+
+        if ($this->requestHasControllerAttribute($arguments)) {
+            $request->attributes->set('_controller', $arguments['controller']);
 
             return;
         }
@@ -86,5 +85,18 @@ class RouterListener implements EventSubscriberInterface
          * @TODO: Integrate routing configuration deeper into container
          */
         $request->attributes->set('_controller', $routes[0]['_controller']);
+    }
+
+    /**
+     * @param array $arguments
+     *
+     * @return boolean
+     */
+    protected function requestHasControllerAttribute($arguments)
+    {
+        return (array_key_exists(
+                'controller',
+                $arguments
+            ) && '' !== $arguments['controller']);
     }
 }

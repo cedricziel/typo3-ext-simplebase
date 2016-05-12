@@ -26,16 +26,21 @@ services:
         autowiring_types:
             - Symfony\Component\DependencyInjection\ContainerInterface
             - Symfony\Component\DependencyInjection\Container
+
+    # Routing Layer
     router_listener:
         class: CedricZiel\Simplebase\Framework\Routing\RouterListener
         arguments: ['@service_container']
         tags:
             - { name: kernel.event_subscriber }
-
     router:
         alias: router.default
     routing.loader:
-        
+        class: CedricZiel\Simplebase\Framework\Routing\DelegatingLoader
+        arguments: ['@controller_name_parser', '@routing.resolver']
+    routing.resolver:
+        class: Symfony\Component\Config\Loader\LoaderResolver
+        public: false
     router.default:
         class: CedricZiel\Simplebase\Framework\Routing\Router
         arguments: ['@service_container', '@?', [], '@router.request_context']

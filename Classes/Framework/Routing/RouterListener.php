@@ -6,6 +6,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Router;
 
 /**
  * Plugs into the HttpKernel and resolves the controllers
@@ -26,6 +29,7 @@ class RouterListener implements EventSubscriberInterface
     {
         $this->container = $container;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -59,17 +63,28 @@ class RouterListener implements EventSubscriberInterface
          *
          * ToDo: Resolve routes from the given TypoScript configuration for the USER object
          */
+
         $extensionName = $this->container->getParameter('extensionName');
         $pluginName = $this->container->getParameter('pluginName');
 
         $baseBundleName = $extensionName.'Bundle';
 
+        $routes = $this->container->getParameter('routes');
+        $prefix = $this->container->getParameter('prefix');
 
+        var_dump($request->get($prefix, false));
+        if (false !== $request->get($prefix, false) && '' !== $request->get($prefix,
+                ['controller' => ''])['controller']
+        ) {
+            $request->attributes->set('_controller', $request->get($prefix)['controller']);
+            $request->attributes->set('news', $request->get($prefix)['news']);
+
+            return;
+        }
 
         /**
          * @TODO: Integrate routing configuration deeper into container
          */
-        // $request->attributes->set('_controller', 'Simplebase:Default:index');
-        $request->attributes->set('_controller', 'SimplebaseBundle:Default:index');
+        $request->attributes->set('_controller', $routes[0]['_controller']);
     }
 }

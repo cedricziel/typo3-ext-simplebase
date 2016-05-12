@@ -65,13 +65,11 @@ class ExtensionUtility
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName])) {
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName] = array();
         }
-        foreach ($controllerActions as $controllerName => $actionsList) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['controllers'][$controllerName] = array(
-                'actions' => GeneralUtility::trimExplode(',', $actionsList),
-            );
-            if (!empty($nonCacheableControllerActions[$controllerName])) {
-                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['controllers'][$controllerName]['nonCacheableActions'] = GeneralUtility::trimExplode(',',
-                    $nonCacheableControllerActions[$controllerName]);
+        foreach ($controllerActions as $routeName => $routeReference) {
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['controllers'][$routeName] = $routeReference;
+            if (!empty($nonCacheableControllerActions[$routeName])) {
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['simplebase']['extensions'][$extensionName]['plugins'][$pluginName]['controllers'][$routeName]['nonCacheableActions'] = GeneralUtility::trimExplode(',',
+                    $nonCacheableControllerActions[$routeName]);
             }
         }
 

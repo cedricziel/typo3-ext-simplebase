@@ -31,3 +31,14 @@ services:
         arguments: ['@service_container']
         tags:
             - { name: kernel.event_subscriber }
+
+    router:
+        alias: router.default
+    routing.loader:
+        
+    router.default:
+        class: CedricZiel\Simplebase\Framework\Routing\Router
+        arguments: ['@service_container', '@?', [], '@router.request_context']
+    router.request_context:
+        class: Symfony\Component\Routing\RequestContext
+

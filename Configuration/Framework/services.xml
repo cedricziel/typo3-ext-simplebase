@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="event_dispatcher" class="Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher">
+            <argument type="service" id="service_container" />
+        </service>
+
+        <service id="http_kernel" class="Symfony\Component\HttpKernel\HttpKernel">
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="controller_resolver" />
+            <argument type="service" id="request_stack" />
+            <!-- <argument type="service" id="argument_resolver" /> -->
+        </service>
+
+        <service id="request_stack" class="Symfony\Component\HttpFoundation\RequestStack" />
+
+        <service id="service_container" synthetic="true">
+            <autowiring-type>Symfony\Component\DependencyInjection\ContainerInterface</autowiring-type>
+            <autowiring-type>Symfony\Component\DependencyInjection\Container</autowiring-type>
+        </service>
+
+        <service id="kernel" synthetic="true" />
+
+        <service id="config_cache_factory" class="Symfony\Component\Config\ResourceCheckerConfigCacheFactory">
+            <argument type="collection"></argument>
+        </service>
+    </services>
+</container>
